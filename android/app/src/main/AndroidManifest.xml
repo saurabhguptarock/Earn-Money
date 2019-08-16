@@ -6,10 +6,14 @@
          In most cases you can leave this as-is, but you if you want to provide
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
+    <uses-permission android:name="android.permission.INTERNET"/>    
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="watch_ads_earn_money"
+        android:label="Watch Ads Earn Money"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3723052345438421~3100599070"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
