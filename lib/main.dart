@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_admob/firebase_admob.dart';
+import './ui/login_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   BannerAd createBannerAd() {
     return BannerAd(
         adUnitId: BannerAd.testAdUnitId,
-        size: AdSize.smartBanner,
+        size: AdSize.banner,
         targetingInfo: mobileAdTargetingInfo,
         listener: (MobileAdEvent event) {
           print(event);
@@ -76,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: load,
         child: Icon(Icons.navigate_next),
       ),
+      body: LoginPage(),
     );
   }
 }
