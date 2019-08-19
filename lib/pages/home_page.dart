@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
       adUnitId: RewardedVideoAd.testAdUnitId,
       targetingInfo: mobileAdTargetingInfo,
     );
-    Timer(Duration(seconds: 2), () => RewardedVideoAd.instance.show());
+    Timer(Duration(seconds: 3), () => RewardedVideoAd.instance.show());
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.rewarded) {
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height * .5,
-        color: Colors.yellow,
+        color: Colors.orange,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[

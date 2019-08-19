@@ -14,7 +14,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       routes: <String, WidgetBuilder>{
-        '/home': (BuildContext context) => HomePage(),
         '/transfer': (BuildContext context) => TransferMoney(),
       },
       home: MyHomePage(),
