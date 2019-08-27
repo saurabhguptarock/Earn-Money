@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 int coins = 0;
 SharedPreferences prefs;
+addDataToCollection(String from, String price) {
+  Firestore.instance
+      .collection('moneyRequest')
+      .document()
+      .setData({'from': from, 'price': price});
+}
 
 class TransferMoney extends StatefulWidget {
   @override
@@ -134,7 +141,7 @@ class Plan extends StatelessWidget {
                   style: TextStyle(
                       color: Colors.white, fontFamily: 'WorkSansMedium'),
                 ),
-                onPressed: () {},
+                onPressed: () => addDataToCollection('+91 9599677968', price),
               ),
             ],
           ),

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +13,7 @@ int coins = 0;
 SharedPreferences prefs;
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static final MobileAdTargetingInfo mobileAdTargetingInfo =
       MobileAdTargetingInfo(
           testDevices: <String>[],
@@ -65,32 +66,48 @@ class _HomePageState extends State<HomePage> {
       ..show();
   }
 
-  showInterstitialAd() {
-    _interstitialAd = createInterstitialAd()
-      ..load()
-      ..show().then((val) {
-        setState(() {
-          coins += 5;
-          prefs.setInt('coins', coins);
-        });
-      });
+  void showInSnackBar(String value) {} // TODO: Complete alert Dialog
+
+  showInterstitialAd() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        _interstitialAd = createInterstitialAd()
+          ..load()
+          ..show().then((val) {
+            setState(() {
+              coins += 5;
+              prefs.setInt('coins', coins);
+            });
+          });
+      }
+    } on SocketException catch (_) {
+      showInSnackBar("Please connect to Internet");
+    }
   }
 
-  showRewardAd() {
-    RewardedVideoAd.instance.load(
-      adUnitId: RewardedVideoAd.testAdUnitId,
-      targetingInfo: mobileAdTargetingInfo,
-    );
-    Timer(Duration(seconds: 3), () => RewardedVideoAd.instance.show());
-    RewardedVideoAd.instance.listener =
-        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      if (event == RewardedVideoAdEvent.rewarded) {
-        setState(() {
-          coins += rewardAmount;
-          prefs.setInt('coins', coins);
-        });
+  showRewardAd() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        RewardedVideoAd.instance.load(
+          adUnitId: RewardedVideoAd.testAdUnitId,
+          targetingInfo: mobileAdTargetingInfo,
+        );
+        Timer(Duration(seconds: 3), () => RewardedVideoAd.instance.show());
+        RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event,
+            {String rewardType, int rewardAmount}) {
+          if (event == RewardedVideoAdEvent.rewarded) {
+            setState(() {
+              coins += rewardAmount;
+              prefs.setInt('coins', coins);
+            });
+          }
+        };
       }
-    };
+    } on SocketException catch (_) {
+      showInSnackBar("Please connect to Internet");
+    }
   }
 
   @override
@@ -103,6 +120,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
           'Your Coins : $coins',

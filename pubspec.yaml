@@ -13,11 +13,21 @@ dependencies:
   cupertino_icons: ^0.1.2
   firebase_admob: ^0.7.0
   font_awesome_flutter: ^8.5.0
+  cloud_firestore: ^0.8.2+3
   shared_preferences: ^0.4.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: 
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.png"
+  adaptive_icon_background: "#191919"
+  adaptive_icon_foreground: "assets/icons/icon.png"
+  
 
 flutter:
   uses-material-design: true
