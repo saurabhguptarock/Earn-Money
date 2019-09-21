@@ -16,16 +16,9 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static final MobileAdTargetingInfo mobileAdTargetingInfo =
       MobileAdTargetingInfo(
-          testDevices: <String>[],
-          childDirected: false,
-          keywords: <String>[
-            'firebase',
-            'google',
-            'facebook',
-            'watch ads',
-            'money',
-            'earn money'
-          ]);
+    testDevices: <String>['36451F1875A8B63DE36BF6E55DFDEC43'],
+    childDirected: false,
+  );
 
   BannerAd _bannerAd;
   InterstitialAd _interstitialAd;
@@ -33,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   BannerAd createBannerAd() {
     return BannerAd(
         adUnitId: BannerAd.testAdUnitId,
-        size: AdSize.smartBanner,
+        size: AdSize.banner,
         targetingInfo: mobileAdTargetingInfo,
         listener: (MobileAdEvent event) {
           print(event);

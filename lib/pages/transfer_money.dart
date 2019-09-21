@@ -8,8 +8,7 @@ SharedPreferences prefs;
 addDataToCollection(String from, String price) {
   Firestore.instance
       .collection('moneyRequest')
-      .document()
-      .setData({'from': from, 'price': price});
+      .add({'from': from, 'price': price});
 }
 
 class TransferMoney extends StatefulWidget {

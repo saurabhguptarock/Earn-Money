@@ -30,7 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    FirebaseAdMob.instance
+        .initialize(appId: 'ca-app-pub-3723052345438421~3100599070');
   }
 
   @override

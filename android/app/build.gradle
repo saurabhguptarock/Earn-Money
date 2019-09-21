@@ -26,9 +26,6 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 28
-    // dexOptions {
-    //     javaMaxHeapSize "4g"
-    // }
     lintOptions {
         disable 'InvalidPackage'
     }
