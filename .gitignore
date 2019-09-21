@@ -10,6 +10,8 @@
 .svn/
 android/app/google-services.json
 
+android/key.properties
+android/app/keys/
 # IntelliJ related
 *.iml
 *.ipr

@@ -87,7 +87,6 @@ class _HomePageState extends State<HomePage> {
           adUnitId: RewardedVideoAd.testAdUnitId,
           targetingInfo: mobileAdTargetingInfo,
         );
-        Timer(Duration(seconds: 3), () => RewardedVideoAd.instance.show());
         RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event,
             {String rewardType, int rewardAmount}) {
           if (event == RewardedVideoAdEvent.rewarded) {
@@ -95,6 +94,9 @@ class _HomePageState extends State<HomePage> {
               coins += rewardAmount;
               prefs.setInt('coins', coins);
             });
+          }
+          if (event == RewardedVideoAdEvent.loaded) {
+            RewardedVideoAd.instance.show();
           }
         };
       }
