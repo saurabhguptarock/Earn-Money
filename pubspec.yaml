@@ -15,11 +15,13 @@ dependencies:
   font_awesome_flutter: ^8.5.0
   cloud_firestore: ^0.8.2+3
   shared_preferences: ^0.4.3
+  scratcher: ^1.2.0
+  share: ^0.6.2+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: 
+  flutter_launcher_icons:
 
 flutter_icons:
   android: true
@@ -27,7 +29,6 @@ flutter_icons:
   image_path: "assets/icons/icon.png"
   adaptive_icon_background: "#191919"
   adaptive_icon_foreground: "assets/icons/icon.png"
-  
 
 flutter:
   uses-material-design: true

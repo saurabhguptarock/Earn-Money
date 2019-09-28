@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,25 +21,12 @@ class _HomePageState extends State<HomePage> {
   );
 
   BannerAd _bannerAd;
-  InterstitialAd _interstitialAd;
 
   BannerAd createBannerAd() {
     return BannerAd(
         adUnitId: BannerAd.testAdUnitId,
         size: AdSize.banner,
-        targetingInfo: mobileAdTargetingInfo,
-        listener: (MobileAdEvent event) {
-          print(event);
-        });
-  }
-
-  InterstitialAd createInterstitialAd() {
-    return InterstitialAd(
-        adUnitId: InterstitialAd.testAdUnitId,
-        targetingInfo: mobileAdTargetingInfo,
-        listener: (MobileAdEvent event) {
-          print(event);
-        });
+        targetingInfo: mobileAdTargetingInfo);
   }
 
   checkCoins() async {
@@ -59,57 +46,10 @@ class _HomePageState extends State<HomePage> {
       ..show();
   }
 
-  void showInSnackBar(String value) {} // TODO: Complete alert Dialog
-
-  showInterstitialAd() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        _interstitialAd = createInterstitialAd()
-          ..load()
-          ..show().then((val) {
-            setState(() {
-              coins += 5;
-              prefs.setInt('coins', coins);
-            });
-          });
-      }
-    } on SocketException catch (_) {
-      showInSnackBar("Please connect to Internet");
-    }
-  }
-
-  showRewardAd() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        RewardedVideoAd.instance.load(
-          adUnitId: RewardedVideoAd.testAdUnitId,
-          targetingInfo: mobileAdTargetingInfo,
-        );
-        RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event,
-            {String rewardType, int rewardAmount}) {
-          if (event == RewardedVideoAdEvent.rewarded) {
-            setState(() {
-              coins += rewardAmount;
-              prefs.setInt('coins', coins);
-            });
-          }
-          if (event == RewardedVideoAdEvent.loaded) {
-            RewardedVideoAd.instance.show();
-          }
-        };
-      }
-    } on SocketException catch (_) {
-      showInSnackBar("Please connect to Internet");
-    }
-  }
-
   @override
   void dispose() {
     super.dispose();
     _bannerAd?.dispose();
-    _interstitialAd?.dispose();
   }
 
   @override
@@ -135,32 +75,84 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * .5,
-        color: Colors.orange,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: NetworkImage(
+                    'https://firebasestorage.googleapis.com/v0/b/earnmoneyviapaytm-75862.appspot.com/o/1545027356.png?alt=media&token=72574f7e-54bf-4e6f-9a69-68c4dc4a271f'),
+                fit: BoxFit.fill)),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            RaisedButton(
-              color: Colors.purpleAccent,
-              child: Text(
-                'Watch Interstitial Ad',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'WorkSansMedium'),
-              ),
-              onPressed: showInterstitialAd,
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 3,
             ),
-            RaisedButton(
-              color: Colors.purpleAccent,
-              child: Text(
-                'Watch Rewarded Ad',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'WorkSansMedium'),
-              ),
-              onPressed: showRewardAd,
+            Column(
+              children: <Widget>[
+                SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: RaisedButton(
+                    disabledColor: Colors.grey,
+                    color: Colors.yellow,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
+                    onPressed: null,
+                    child: Text(
+                      'Spin',
+                      style: TextStyle(color: Colors.white, fontSize: 35),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20),
+                ),
+                SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: RaisedButton(
+                    color: Colors.purpleAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/scratch'),
+                    child: Text(
+                      'Scratch',
+                      style: TextStyle(color: Colors.white, fontSize: 35),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20),
+                ),
+                SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: RaisedButton(
+                    color: Colors.orange,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50)),
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/transfer'),
+                    child: Text(
+                      'Withdraw',
+                      style: TextStyle(color: Colors.white, fontSize: 35),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 30),
+                ),
+                FloatingActionButton(
+                  backgroundColor: Colors.blue,
+                  child: Icon(
+                    Icons.share,
+                    color: Colors.yellowAccent,
+                    size: 40,
+                  ),
+                  onPressed: () => Share.share(
+                      'Download App and Earn Paytm Money. \n https://drive.google.com/open?id=1fEJ24Pt6hAOdi8Ervjp3xV0ixJ5lcGZN'),
+                ),
+              ],
             )
           ],
         ),
