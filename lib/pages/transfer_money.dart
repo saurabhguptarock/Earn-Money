@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'home_page.dart' as home;
 
 int coins = 0;
 double rupees = 0;
@@ -27,7 +28,7 @@ class _TransferMoneyState extends State<TransferMoney> {
     var coin = prefs.getInt("coins") ?? 0;
     setState(() {
       coins = coin;
-      rupees = coin / 50;
+      rupees = coin / 1000;
     });
   }
 
@@ -129,11 +130,11 @@ class _TransferMoneyState extends State<TransferMoney> {
                         onChanged: (val) {
                           setState(() {
                             if (val.isNotEmpty)
-                              convertMoney = double.parse(val) / 50;
+                              convertMoney = double.parse(val) / 1000;
                             else
                               convertMoney = 0;
-                            if (int.parse(val) >= 2500 &&
-                                int.parse(val) <= 100000)
+                            if (int.parse(val) >= 100000 &&
+                                int.parse(val) <= 10000000)
                               convertColor = Colors.green;
                             else
                               convertColor = Colors.red;
@@ -148,7 +149,7 @@ class _TransferMoneyState extends State<TransferMoney> {
                             color: Colors.black),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: "Email Coins",
+                          hintText: "Enter Coins",
                           hintStyle: TextStyle(
                               fontFamily: "WorkSansMedium", fontSize: 17.0),
                         ),
@@ -205,7 +206,7 @@ class _TransferMoneyState extends State<TransferMoney> {
                           color: Colors.black),
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "Email Your Phone Number",
+                        hintText: "Enter Your Phone Number",
                         hintStyle: TextStyle(
                             fontFamily: "WorkSansMedium", fontSize: 17.0),
                       ),
@@ -221,20 +222,31 @@ class _TransferMoneyState extends State<TransferMoney> {
               elevation: 2,
               child: InkWell(
                 onTap: () {
-                  if (convertMoney * 50 < 2500)
-                    infoDialog(
-                        context, 'You Can Not Withdraw Less Than 2500 Coins');
-                  else if (convertMoney * 50 > 100000)
+                  if (convertMoney * 1000 < 100000)
                     infoDialog(context,
-                        'You Can Not Withdraw More Than 100000 Coins ');
+                        'You Can Not Withdraw Less Than 1,00,000 Coins');
+                  else if (convertMoney * 1000 > 10000000)
+                    infoDialog(context,
+                        'You Can Not Withdraw More Than 1,00,00,000 Coins ');
                   else if (phoneNumber.toString().length < 10 ||
                       phoneNumber.toString().length > 10)
                     infoDialog(
                         context, 'Phone Number Should be 10 Digits Long');
-                  else if (convertMoney * 50 > coins)
+                  else if (convertMoney * 1000 > coins)
                     infoDialog(context, 'You Have Not Enough Coins');
-                  else
+                  else {
                     addDataToCollection();
+                    var remainingCoins = coins - (convertMoney * 1000);
+                    setState(() {
+                      home.coins = remainingCoins.toInt();
+                      coins = remainingCoins.toInt();
+                      rupees = remainingCoins / 1000;
+                      prefs.setInt('coins', remainingCoins.toInt());
+                    });
+                    coinController.clear();
+                    phoneController.clear();
+                    infoDialog(context, 'Your Request Has Been Sent');
+                  }
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -279,7 +291,7 @@ class _TransferMoneyState extends State<TransferMoney> {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '   1. Minimum Transaction Amount is 2,500 Coins.',
+                    '   1. Minimum Transaction Amount is 1,00,000 Coins.',
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: 'WorkSansMedium',
@@ -299,7 +311,7 @@ class _TransferMoneyState extends State<TransferMoney> {
                     padding: EdgeInsets.only(bottom: 5),
                   ),
                   Text(
-                    '   3. 2,500 coin = 50 INR.',
+                    '   3. 1,00,000 coin = 100 INR.',
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: 'WorkSansMedium',
@@ -319,7 +331,7 @@ class _TransferMoneyState extends State<TransferMoney> {
                     padding: EdgeInsets.only(bottom: 5),
                   ),
                   Text(
-                    '   5. Daily Spin Limit is 10',
+                    '   5. Daily Spin Limit is 15',
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: 'WorkSansMedium',
@@ -329,7 +341,7 @@ class _TransferMoneyState extends State<TransferMoney> {
                     padding: EdgeInsets.only(bottom: 5),
                   ),
                   Text(
-                    '   6. Daily Scratch Limit is 10',
+                    '   6. Daily Scratch Limit is 15',
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: 'WorkSansMedium',

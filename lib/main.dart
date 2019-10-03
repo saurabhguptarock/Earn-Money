@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Watch Ads Earn Money',
+      title: 'Scratch and Earn',
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
