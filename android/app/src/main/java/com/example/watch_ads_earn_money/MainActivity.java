@@ -1,4 +1,4 @@
-package com.example.watch_ads_earn_money;
+package com.saverl.scratchandearn;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
