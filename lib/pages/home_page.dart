@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: NetworkImage(
-                    'https://firebasestorage.googleapis.com/v0/b/earnmoneyviapaytm-75862.appspot.com/o/1545027356.png?alt=media&token=72574f7e-54bf-4e6f-9a69-68c4dc4a271f'),
+                    'https://firebasestorage.googleapis.com/v0/b/earnmoneyviapaytm-75862.appspot.com/o/deasdamo.webp?alt=media&token=4be5bbdc-eeb7-4284-84cd-776ce20b6303'),
                 fit: BoxFit.fill)),
         child: Column(
           children: <Widget>[
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                     size: 40,
                   ),
                   onPressed: () => Share.share(
-                      'Download App and Earn Paytm Money. \n https://drive.google.com/open?id=1fEJ24Pt6hAOdi8Ervjp3xV0ixJ5lcGZN'),
+                      'Download App and Earn Paytm Money. \n https://play.google.com/store/apps/details?id=com.saverl.scratchandearn'),
                 ),
               ],
             )
