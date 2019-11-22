@@ -38,7 +38,7 @@ class _ScratchCardState extends State<ScratchCard> {
     super.initState();
     checkCoins();
     setState(() {
-      randomCoin = Random().nextInt(30);
+      randomCoin = Random().nextInt(80) + 20;
     });
   }
 

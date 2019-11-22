@@ -245,7 +245,8 @@ class _TransferMoneyState extends State<TransferMoney> {
                     });
                     coinController.clear();
                     phoneController.clear();
-                    infoDialog(context, 'Your Request Has Been Sent');
+                    infoDialog(context,
+                        'Request has been sent. Money will be transfered within 2-5 days');
                   }
                 },
                 child: Container(
