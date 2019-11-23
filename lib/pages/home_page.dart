@@ -9,17 +9,17 @@ class HomePage extends StatefulWidget {
 }
 
 int coins = 0;
-SharedPreferences prefs;
+int scratchTime = 0;
 
 class _HomePageState extends State<HomePage> {
+  BannerAd _bannerAd;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   static final MobileAdTargetingInfo mobileAdTargetingInfo =
       MobileAdTargetingInfo(
     testDevices: <String>['36451F1875A8B63DE36BF6E55DFDEC43'],
     childDirected: false,
   );
-
-  BannerAd _bannerAd;
 
   BannerAd createBannerAd() {
     return BannerAd(
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   checkCoins() async {
-    prefs = await SharedPreferences.getInstance();
+    var prefs = await SharedPreferences.getInstance();
     var coin = prefs.getInt("coins") ?? 0;
     setState(() {
       coins = coin;
@@ -39,10 +39,63 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    initialize();
     checkCoins();
     _bannerAd = createBannerAd()
       ..load()
       ..show();
+  }
+
+  initialize() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    TimeOfDay now = TimeOfDay.now();
+    int lastGiven = 0;
+    if (prefs.getInt('lastGiven') != null) {
+      lastGiven = prefs.getInt('lastGiven');
+      scratchTime = prefs.getInt('scratchTime');
+    } else {
+      int time;
+      if (now.hour >= 0 && now.hour < 4) {
+        time = 0;
+      } else if (now.hour >= 4 && now.hour < 8) {
+        time = 4;
+      } else if (now.hour >= 8 && now.hour < 12) {
+        time = 8;
+      } else if (now.hour >= 12 && now.hour < 16) {
+        time = 12;
+      } else if (now.hour >= 16 && now.hour < 20) {
+        time = 16;
+      } else {
+        time = 20;
+      }
+      lastGiven = time;
+      await prefs.setInt('lastGiven', time);
+      await prefs.setInt('scratchTime', 20);
+      scratchTime = 20;
+    }
+
+    if (now.hour - lastGiven >= 4 || now.hour <= lastGiven) {
+      await prefs.setInt('scratchTime', 20);
+      int time;
+      if (now.hour >= 0 && now.hour < 4) {
+        time = 0;
+      } else if (now.hour >= 4 && now.hour < 8) {
+        time = 4;
+      } else if (now.hour >= 8 && now.hour < 12) {
+        time = 8;
+      } else if (now.hour >= 12 && now.hour < 16) {
+        time = 12;
+      } else if (now.hour >= 16 && now.hour < 20) {
+        time = 16;
+      } else {
+        time = 20;
+      }
+      await prefs.setInt('lastGiven', time);
+      setState(() {
+        scratchTime = 20;
+      });
+    }
   }
 
   @override

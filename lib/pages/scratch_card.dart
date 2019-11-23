@@ -1,24 +1,23 @@
+import 'dart:async';
 import 'dart:io';
-
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:scratcher/scratcher.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:math';
 import 'home_page.dart' as home;
+import 'home_page.dart';
 
 class ScratchCard extends StatefulWidget {
   @override
   _ScratchCardState createState() => _ScratchCardState();
 }
 
-SharedPreferences prefs;
 int coins = 0;
 int randomCoin = 0;
 
 class _ScratchCardState extends State<ScratchCard> {
   checkCoins() async {
-    prefs = await SharedPreferences.getInstance();
+    var prefs = await SharedPreferences.getInstance();
     var coin = prefs.getInt("coins") ?? 0;
     setState(() {
       coins = coin;
@@ -31,15 +30,6 @@ class _ScratchCardState extends State<ScratchCard> {
   void dispose() {
     super.dispose();
     _interstitialAd?.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkCoins();
-    setState(() {
-      randomCoin = Random().nextInt(80) + 20;
-    });
   }
 
   static final MobileAdTargetingInfo mobileAdTargetingInfo =
@@ -80,10 +70,28 @@ class _ScratchCardState extends State<ScratchCard> {
   // }
 
   final scratchKey = GlobalKey<ScratcherState>();
+
   @override
   Widget build(BuildContext context) {
+    if (home.scratchTime <= 0) {
+      Timer.run(() {
+        infoDialog(
+            context, 'Your limit is reached come back again in 4 hours.');
+      });
+    }
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 25),
+              child: Text(
+                '$scratchTime',
+                style: TextStyle(fontFamily: 'WorkSansMedium', fontSize: 20),
+              ),
+            ),
+          ),
+        ],
         title: Text(
           'Scratch and Earn',
           style: TextStyle(fontFamily: 'WorkSansMedium', fontSize: 20),
@@ -100,17 +108,21 @@ class _ScratchCardState extends State<ScratchCard> {
               threshold: 20,
               color: Colors.grey,
               onThreshold: () async {
+                var prefs = await SharedPreferences.getInstance();
+
                 scratchKey.currentState.reveal();
                 try {
                   final result = await InternetAddress.lookup('google.com');
                   if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
                     infoDialog(context, 'You have won $randomCoin');
+                    showInterstitialAd();
                     setState(() {
                       coins += randomCoin;
                       prefs.setInt('coins', coins);
                       home.coins = coins;
+                      scratchTime -= 1;
+                      prefs.setInt('scratchTime', scratchTime);
                     });
-                    showInterstitialAd();
                   }
                 } on SocketException catch (_) {
                   infoDialog(context, 'Please Enable Internet');
