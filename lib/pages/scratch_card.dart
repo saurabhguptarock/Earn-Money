@@ -31,7 +31,7 @@ class _ScratchCardState extends State<ScratchCard> {
     super.initState();
     checkCoins();
     setState(() {
-      randomCoin = Random().nextInt(80) + 20;
+      randomCoin = Random().nextInt(90) + 10;
     });
   }
 
@@ -99,8 +99,10 @@ class _ScratchCardState extends State<ScratchCard> {
         time = 20;
       }
       Timer.run(() {
-        infoDialog(context,
-            'Your limit is reached come back again in ${4 - now.hour + time} hours.');
+        infoDialog(
+            context,
+            'Your limit is reached come back again in ${4 - now.hour + time} hours.',
+            false);
       });
     }
     return Scaffold(
@@ -138,7 +140,7 @@ class _ScratchCardState extends State<ScratchCard> {
                 try {
                   final result = await InternetAddress.lookup('google.com');
                   if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-                    infoDialog(context, 'You have won $randomCoin');
+                    infoDialog(context, 'You have won $randomCoin', true);
                     showInterstitialAd();
                     setState(() {
                       coins += randomCoin;
@@ -149,7 +151,7 @@ class _ScratchCardState extends State<ScratchCard> {
                     });
                   }
                 } on SocketException catch (_) {
-                  infoDialog(context, 'Please Enable Internet');
+                  infoDialog(context, 'Please Enable Internet', true);
                 }
               },
               child: Container(
@@ -172,25 +174,34 @@ class _ScratchCardState extends State<ScratchCard> {
     );
   }
 
-  Future<bool> infoDialog(BuildContext context, String review) {
+  Future<bool> infoDialog(BuildContext context, String review, bool yup) {
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(review),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(
-                'OK',
-                style: TextStyle(fontSize: 30),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            )
-          ],
+        return WillPopScope(
+          onWillPop: () => Future.value(false),
+          child: AlertDialog(
+            title: Text(review),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  'OK',
+                  style: TextStyle(fontSize: 30),
+                ),
+                onPressed: () {
+                  if (yup) {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  }
+                },
+              )
+            ],
+          ),
         );
       },
     );
