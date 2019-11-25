@@ -48,52 +48,26 @@ class _HomePageState extends State<HomePage> {
 
   initialize() async {
     var prefs = await SharedPreferences.getInstance();
-
     TimeOfDay now = TimeOfDay.now();
-    int lastGiven = 0;
-    if (prefs.getInt('lastGiven') != null) {
-      lastGiven = prefs.getInt('lastGiven');
-      scratchTime = prefs.getInt('scratchTime');
+    if (prefs.getInt('lastOpen') != null) {
+      if (prefs.getInt('scratchTime') <= 0) {
+        if (prefs.getInt('lastOpen') > now.hour) {
+          await prefs.setInt('scratchTime', 500);
+          await prefs.setInt('lastOpen', now.hour);
+          setState(() {
+            scratchTime = 500;
+          });
+        } else {
+          await prefs.setInt('lastOpen', now.hour);
+        }
+      } else {
+        await prefs.setInt('lastOpen', now.hour);
+      }
     } else {
-      int time;
-      if (now.hour >= 0 && now.hour < 4) {
-        time = 0;
-      } else if (now.hour >= 4 && now.hour < 8) {
-        time = 4;
-      } else if (now.hour >= 8 && now.hour < 12) {
-        time = 8;
-      } else if (now.hour >= 12 && now.hour < 16) {
-        time = 12;
-      } else if (now.hour >= 16 && now.hour < 20) {
-        time = 16;
-      } else {
-        time = 20;
-      }
-      lastGiven = time;
-      await prefs.setInt('lastGiven', time);
-      await prefs.setInt('scratchTime', 20);
-      scratchTime = 20;
-    }
-
-    if (now.hour - lastGiven >= 4 || now.hour <= lastGiven) {
-      await prefs.setInt('scratchTime', 20);
-      int time;
-      if (now.hour >= 0 && now.hour < 4) {
-        time = 0;
-      } else if (now.hour >= 4 && now.hour < 8) {
-        time = 4;
-      } else if (now.hour >= 8 && now.hour < 12) {
-        time = 8;
-      } else if (now.hour >= 12 && now.hour < 16) {
-        time = 12;
-      } else if (now.hour >= 16 && now.hour < 20) {
-        time = 16;
-      } else {
-        time = 20;
-      }
-      await prefs.setInt('lastGiven', time);
+      await prefs.setInt('lastOpen', now.hour);
+      await prefs.setInt('scratchTime', 500);
       setState(() {
-        scratchTime = 20;
+        scratchTime = 500;
       });
     }
   }

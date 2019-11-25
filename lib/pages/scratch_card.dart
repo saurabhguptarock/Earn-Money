@@ -84,24 +84,10 @@ class _ScratchCardState extends State<ScratchCard> {
   Widget build(BuildContext context) {
     if (home.scratchTime <= 0) {
       TimeOfDay now = TimeOfDay.now();
-      int time;
-      if (now.hour >= 0 && now.hour < 4) {
-        time = 0;
-      } else if (now.hour >= 4 && now.hour < 8) {
-        time = 4;
-      } else if (now.hour >= 8 && now.hour < 12) {
-        time = 8;
-      } else if (now.hour >= 12 && now.hour < 16) {
-        time = 12;
-      } else if (now.hour >= 16 && now.hour < 20) {
-        time = 16;
-      } else {
-        time = 20;
-      }
       Timer.run(() {
         infoDialog(
             context,
-            'Your limit is reached come back again in ${4 - now.hour + time} hours.',
+            'Your limit is expired come back again in ${24 - now.hour} hours.',
             false);
       });
     }
